@@ -4,6 +4,12 @@ exports.handler = async function(event) {
   }
   try {
     const body = JSON.parse(event.body);
+    const payload = {
+      model: 'claude-haiku-4-5-20251001',
+      max_tokens: 800,
+      messages: body.messages
+    };
+    if (body.system) payload.system = body.system;
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
@@ -11,25 +17,15 @@ exports.handler = async function(event) {
         'x-api-key': process.env.ANTHROPIC_API_KEY,
         'anthropic-version': '2023-06-01'
       },
-      body: JSON.stringify({
-        model: 'claude-haiku-4-5-20251001',
-        max_tokens: 800,
-        messages: body.messages
-      })
+      body: JSON.stringify(payload)
     });
     const data = await response.json();
     return {
       statusCode: 200,
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Content-Type': 'application/json'
-      },
+      headers: { 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json' },
       body: JSON.stringify(data)
     };
   } catch (err) {
-    return {
-      statusCode: 500,
-      body: JSON.stringify({ error: err.message })
-    };
+    return { statusCode: 500, body: JSON.stringify({ error: err.message }) };
   }
 };
