@@ -3,755 +3,1081 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Daily Rhythm Generator — Flourish & Flow</title>
-<link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Poppins:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet">
+<title>Your Daily Rhythm — Flourish & Flow</title>
+<link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Poppins:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
 <style>
-:root{--cream:#f6f4f0;--sage:#8ea185;--deep-green:#758578;--terracotta:#a1765a;--dark:#3a3d38;--slate:#919d9d;--border:#d4cfc8;--white:#fdfcfa}
-*{margin:0;padding:0;box-sizing:border-box}
-body{background:var(--cream);color:var(--dark);font-family:'Poppins',sans-serif;font-weight:300;font-size:15px;line-height:1.75;min-height:100vh;overflow-x:hidden}
-body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 15% 15%,rgba(142,161,133,.10) 0%,transparent 55%),radial-gradient(ellipse at 85% 80%,rgba(161,118,90,.07) 0%,transparent 55%);pointer-events:none;z-index:0}
-.container{max-width:700px;margin:0 auto;padding:0 24px;position:relative;z-index:1}
-header{text-align:center;padding:72px 0 52px}
-.eyebrow{font-size:10px;font-weight:400;letter-spacing:.22em;text-transform:uppercase;color:var(--sage);margin-bottom:18px}
-h1{font-family:'Abril Fatface',serif;font-size:clamp(44px,9vw,72px);font-weight:400;line-height:1.05;color:var(--dark)}
-h1 .accent{color:var(--terracotta)}
-.subtitle{font-weight:300;font-size:15px;color:var(--slate);max-width:460px;margin:18px auto 0;line-height:1.85}
-.form-section{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:32px;margin-bottom:20px;position:relative;overflow:hidden}
-.form-section::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(to right,var(--sage),var(--deep-green),var(--terracotta))}
-.step-label{font-size:10px;font-weight:400;letter-spacing:.2em;text-transform:uppercase;color:var(--sage);margin-bottom:4px}
-.section-title{font-family:'Abril Fatface',serif;font-size:22px;color:var(--dark);margin-bottom:4px;line-height:1.2}
-.section-sub{font-size:13px;font-weight:300;color:var(--slate);margin-bottom:24px}
-.field{margin-bottom:18px}
-.field:last-child{margin-bottom:0}
-.field-label{display:block;font-size:10px;font-weight:400;letter-spacing:.2em;text-transform:uppercase;color:var(--dark);margin-bottom:7px}
-.field-hint{font-size:11px;font-weight:300;color:var(--slate);font-style:italic;margin-bottom:8px;line-height:1.6}
-select,input[type=text],input[type=email],input[type=time],textarea{width:100%;background:var(--cream);border:1px solid var(--border);border-radius:8px;padding:11px 14px;font-family:'Poppins',sans-serif;font-size:14px;font-weight:300;color:var(--dark);transition:border-color .2s,box-shadow .2s;-webkit-appearance:none;appearance:none}
-select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='7' viewBox='0 0 11 7'%3E%3Cpath d='M1 1l4.5 4.5L10 1' stroke='%238ea185' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 13px center;padding-right:38px;cursor:pointer}
-select:focus,input:focus,textarea:focus{outline:none;border-color:var(--sage);box-shadow:0 0 0 3px rgba(142,161,133,.14)}
-textarea{resize:vertical;min-height:84px;line-height:1.7}
-.field-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-@media(max-width:520px){.field-row{grid-template-columns:1fr}.form-section{padding:22px 18px}}
-.pill-group{display:flex;flex-wrap:wrap;gap:8px}
-.pill-wrap{display:flex}
-.pill-wrap input[type=checkbox]{display:none}
-.pill{background:var(--cream);border:1px solid var(--border);border-radius:20px;padding:6px 14px;font-size:12px;font-weight:400;color:var(--slate);cursor:pointer;transition:all .18s;user-select:none}
-.pill-wrap input:checked+.pill{background:var(--sage);border-color:var(--sage);color:#fff}
-.generate-btn{width:100%;padding:17px 32px;background:var(--sage);color:#fff;border:none;border-radius:10px;font-family:'Poppins',sans-serif;font-size:12px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;transition:background .25s,transform .15s;margin-top:8px;margin-bottom:48px}
-.generate-btn:hover{background:var(--deep-green);transform:translateY(-1px)}
-.email-gate{display:none;background:var(--white);border:1px solid var(--border);border-radius:14px;padding:52px 40px;text-align:center;position:relative;overflow:hidden;margin-bottom:48px}
-.email-gate.active{display:block;animation:fadeUp .5s ease forwards}
-.email-gate::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(to right,var(--sage),var(--deep-green),var(--terracotta))}
-.gate-glyph{font-size:38px;margin-bottom:18px}
-.email-gate h2{font-family:'Abril Fatface',serif;font-size:30px;color:var(--dark);margin-bottom:12px;line-height:1.15}
-.email-gate p{font-size:14px;font-weight:300;color:var(--slate);max-width:380px;margin:0 auto 30px;line-height:1.85}
-.email-form{display:flex;flex-direction:column;gap:11px;max-width:360px;margin:0 auto}
-.email-form input{text-align:center}
-.email-submit{padding:15px 32px;background:var(--terracotta);color:#fff;border:none;border-radius:8px;font-family:'Poppins',sans-serif;font-size:12px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;transition:background .2s,transform .15s;margin-top:2px}
-.email-submit:hover{background:#8f6348;transform:translateY(-1px)}
-.privacy{font-size:11px;color:var(--border);margin-top:10px;letter-spacing:.04em}
-.loading{display:none;text-align:center;padding:64px 0}
-.loading.active{display:block;animation:fadeUp .4s ease forwards}
-.orbs{display:flex;justify-content:center;gap:10px;margin-bottom:24px}
-.orb{width:9px;height:9px;border-radius:50%;animation:bounce 1.3s ease-in-out infinite}
-.orb:nth-child(1){background:var(--sage)}
-.orb:nth-child(2){background:var(--terracotta);animation-delay:.18s}
-.orb:nth-child(3){background:var(--deep-green);animation-delay:.36s}
-@keyframes bounce{0%,80%,100%{transform:scale(.55);opacity:.35}40%{transform:scale(1);opacity:1}}
-.loading p{font-style:italic;font-weight:300;font-size:16px;color:var(--slate);line-height:2}
-.result{display:none}
-.result.active{display:block;animation:fadeUp .6s ease forwards}
-@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
-.result-header{text-align:center;padding:52px 0 32px}
-.result-header h2{font-family:'Abril Fatface',serif;font-size:38px;color:var(--dark);margin-bottom:8px}
-.result-header p{font-size:13px;color:var(--slate);letter-spacing:.04em}
-.result-card{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:36px;margin-bottom:24px;position:relative;overflow:hidden}
-.result-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(to right,var(--sage),var(--terracotta))}
-.result-body{font-size:14px;line-height:1.9;color:var(--dark)}
-.result-body h2{font-family:'Abril Fatface',serif;font-size:22px;color:var(--dark);margin:30px 0 8px;font-weight:400}
-.result-body h2:first-child{margin-top:0}
-.result-body h3{font-size:10px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:var(--terracotta);margin:22px 0 6px}
-.result-body strong{color:var(--deep-green);font-weight:500}
-.result-body em{font-style:italic;color:var(--slate)}
-.result-body p{margin-bottom:12px}
-.calendar-section{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:32px;margin-bottom:24px;position:relative;overflow:hidden;text-align:center}
-.calendar-section::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(to right,var(--terracotta),var(--sage))}
-.calendar-section-eyebrow{font-size:10px;font-weight:400;letter-spacing:.22em;text-transform:uppercase;color:var(--terracotta);margin-bottom:10px}
-.calendar-section h3{font-family:'Abril Fatface',serif;font-size:26px;color:var(--dark);margin-bottom:8px;font-weight:400}
-.calendar-section p{font-size:13px;font-weight:300;color:var(--slate);max-width:420px;margin:0 auto 28px;line-height:1.85}
-.calendar-events-preview{display:flex;flex-direction:column;gap:6px;margin-bottom:28px;text-align:left;max-width:400px;margin-left:auto;margin-right:auto}
-.cal-event-pill{display:flex;align-items:center;gap:12px;background:var(--cream);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-size:13px}
-.cal-event-time{font-size:10px;font-weight:500;letter-spacing:.1em;color:var(--terracotta);min-width:58px}
-.cal-event-name{font-weight:400;color:var(--dark);flex:1}
-.calendar-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
-.btn-cal-google{display:inline-flex;align-items:center;gap:9px;padding:13px 22px;background:var(--dark);color:#fff;border:none;border-radius:8px;font-family:'Poppins',sans-serif;font-size:11px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;transition:background .2s,transform .15s;text-decoration:none}
-.btn-cal-google:hover{background:#2a2c28;transform:translateY(-1px)}
-.btn-cal-ics{display:inline-flex;align-items:center;gap:9px;padding:13px 22px;background:transparent;color:var(--dark);border:1px solid var(--border);border-radius:8px;font-family:'Poppins',sans-serif;font-size:11px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;transition:all .2s}
-.btn-cal-ics:hover{border-color:var(--sage);color:var(--sage);transform:translateY(-1px)}
-.cal-note{font-size:11px;color:var(--border);margin-top:14px;letter-spacing:.04em}
-.refine-section{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:32px;margin-bottom:24px;position:relative;overflow:hidden}
-.refine-section::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(to right,var(--deep-green),var(--sage))}
-.refine-eyebrow{font-size:10px;font-weight:400;letter-spacing:.22em;text-transform:uppercase;color:var(--deep-green);margin-bottom:8px}
-.refine-section h3{font-family:'Abril Fatface',serif;font-size:22px;color:var(--dark);margin-bottom:6px;font-weight:400;line-height:1.2}
-.refine-section>p{font-size:13px;font-weight:300;color:var(--slate);line-height:1.85;margin-bottom:18px}
-.refine-textarea{width:100%;background:var(--cream);border:1px solid var(--border);border-radius:8px;padding:13px 14px;font-family:'Poppins',sans-serif;font-size:14px;font-weight:300;color:var(--dark);line-height:1.7;resize:vertical;min-height:90px;transition:border-color .2s,box-shadow .2s;margin-bottom:12px}
-.refine-textarea:focus{outline:none;border-color:var(--deep-green);box-shadow:0 0 0 3px rgba(117,133,120,.14)}
-.btn-refine{width:100%;padding:14px 24px;background:var(--deep-green);color:#fff;border:none;border-radius:8px;font-family:'Poppins',sans-serif;font-size:11px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;transition:background .2s,transform .15s}
-.btn-refine:hover{background:#5a6b5d;transform:translateY(-1px)}
-.btn-refine:disabled{opacity:.5;cursor:not-allowed;transform:none}
-.action-row{display:flex;gap:12px;margin-bottom:72px}
-.btn-ghost{flex:1;padding:13px;background:transparent;border:1px solid var(--border);border-radius:8px;font-family:'Poppins',sans-serif;font-size:11px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--slate);cursor:pointer;transition:all .2s}
-.btn-ghost:hover{border-color:var(--sage);color:var(--sage)}
-.btn-filled{flex:1;padding:13px;background:var(--sage);border:none;border-radius:8px;font-family:'Poppins',sans-serif;font-size:11px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:#fff;cursor:pointer;transition:background .2s}
-.btn-filled:hover{background:var(--deep-green)}
-.error-msg{background:rgba(161,118,90,.08);border:1px solid rgba(161,118,90,.25);border-radius:8px;padding:10px 14px;font-size:13px;color:var(--terracotta);margin-top:10px;display:none}
-.error-msg.active{display:block}
-footer{text-align:center;padding:28px 0 52px;border-top:1px solid var(--border);font-size:10px;font-weight:400;letter-spacing:.12em;text-transform:uppercase;color:var(--slate)}
-footer a{color:var(--sage);text-decoration:none}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --cream: #f6f4f0;
+  --cream-dark: #ede9e3;
+  --sage: #8ea185;
+  --deep: #758578;
+  --terra: #a1765a;
+  --dark: #3a3d38;
+  --slate: #919d9d;
+  --border: #d4cfc8;
+  --white: #fdfcfa;
+}
+
+html, body { height: 100%; }
+
+body {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 300;
+  background: var(--cream);
+  color: var(--dark);
+  -webkit-font-smoothing: antialiased;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* HEADER */
+.header {
+  text-align: center;
+  padding: 48px 24px 32px;
+  border-bottom: 1px solid var(--border);
+  background: var(--white);
+}
+
+.header-eyebrow {
+  font-size: 9px;
+  font-weight: 400;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--sage);
+  margin-bottom: 12px;
+}
+
+.header h1 {
+  font-family: 'Abril Fatface', serif;
+  font-size: clamp(36px, 8vw, 56px);
+  color: var(--dark);
+  line-height: 1.05;
+  margin-bottom: 8px;
+}
+
+.header h1 span { color: var(--terra); }
+
+.header-sub {
+  font-size: 13px;
+  color: var(--slate);
+  font-weight: 300;
+  font-style: italic;
+}
+
+/* CHAT CONTAINER */
+.chat-wrap {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  max-width: 680px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+.messages {
+  flex: 1;
+  padding: 32px 0 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  overflow-y: auto;
+}
+
+/* MESSAGES */
+.msg {
+  display: flex;
+  gap: 12px;
+  animation: msgIn 0.4s ease forwards;
+  opacity: 0;
+}
+
+@keyframes msgIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.msg.user { flex-direction: row-reverse; }
+
+.msg-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  margin-top: 2px;
+}
+
+.msg.bot .msg-avatar {
+  background: var(--sage);
+  color: #fff;
+}
+
+.msg.user .msg-avatar {
+  background: var(--terra);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.msg-bubble {
+  max-width: 78%;
+  padding: 14px 18px;
+  border-radius: 18px;
+  font-size: 14px;
+  line-height: 1.75;
+  font-weight: 300;
+}
+
+.msg.bot .msg-bubble {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-bottom-left-radius: 4px;
+  color: var(--dark);
+}
+
+.msg.user .msg-bubble {
+  background: var(--terra);
+  color: #fff;
+  border-bottom-right-radius: 4px;
+}
+
+.msg-bubble strong { font-weight: 500; }
+.msg-bubble em { font-style: italic; opacity: 0.85; }
+
+.msg-bubble h2 {
+  font-family: 'Abril Fatface', serif;
+  font-size: 20px;
+  font-weight: 400;
+  color: var(--dark);
+  margin: 16px 0 8px;
+  line-height: 1.2;
+}
+
+.msg-bubble h2:first-child { margin-top: 0; }
+
+.msg-bubble h3 {
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--terra);
+  margin: 14px 0 4px;
+}
+
+.msg-bubble p { margin-bottom: 10px; }
+.msg-bubble p:last-child { margin-bottom: 0; }
+
+/* RHYTHM RESULT BUBBLE */
+.msg.result .msg-bubble {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-top: 3px solid var(--sage);
+  border-bottom-left-radius: 4px;
+  max-width: 90%;
+}
+
+/* CALENDAR CARD */
+.calendar-card {
+  background: var(--cream-dark);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  margin-top: 16px;
+}
+
+.calendar-card-title {
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--terra);
+  margin-bottom: 12px;
+}
+
+.cal-events {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.cal-event {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  padding: 8px 12px;
+  font-size: 12px;
+}
+
+.cal-event-time {
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  color: var(--terra);
+  min-width: 52px;
+}
+
+.cal-event-name { color: var(--dark); font-weight: 400; }
+
+.cal-btns { display: flex; gap: 8px; flex-wrap: wrap; }
+
+.cal-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 10px 16px;
+  border-radius: 7px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s;
+}
+
+.cal-btn-dark {
+  background: var(--dark);
+  color: #fff;
+}
+.cal-btn-dark:hover { background: #2a2c28; }
+
+.cal-btn-outline {
+  background: transparent;
+  color: var(--dark);
+  border: 1px solid var(--border);
+}
+.cal-btn-outline:hover { border-color: var(--sage); color: var(--sage); }
+
+/* TYPING INDICATOR */
+.typing {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.typing.active { opacity: 1; }
+
+.typing-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--sage);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  flex-shrink: 0;
+}
+
+.typing-dots {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  border-bottom-left-radius: 4px;
+  padding: 14px 18px;
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--border);
+  animation: dotBounce 1.2s ease-in-out infinite;
+}
+.dot:nth-child(2) { animation-delay: 0.2s; }
+.dot:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes dotBounce {
+  0%, 60%, 100% { transform: translateY(0); background: var(--border); }
+  30% { transform: translateY(-5px); background: var(--sage); }
+}
+
+/* EMAIL GATE */
+.email-gate {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-top: 3px solid var(--terra);
+  border-radius: 18px;
+  border-bottom-left-radius: 4px;
+  padding: 24px;
+  max-width: 78%;
+  animation: msgIn 0.4s ease forwards;
+}
+
+.email-gate h3 {
+  font-family: 'Abril Fatface', serif;
+  font-size: 22px;
+  font-weight: 400;
+  color: var(--dark);
+  margin-bottom: 8px;
+  line-height: 1.2;
+}
+
+.email-gate p {
+  font-size: 13px;
+  color: var(--slate);
+  line-height: 1.8;
+  margin-bottom: 16px;
+  font-weight: 300;
+}
+
+.email-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.email-fields input {
+  width: 100%;
+  background: var(--cream);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 11px 14px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 13px;
+  font-weight: 300;
+  color: var(--dark);
+  transition: border-color 0.2s;
+}
+
+.email-fields input:focus {
+  outline: none;
+  border-color: var(--sage);
+}
+
+.email-submit {
+  width: 100%;
+  padding: 13px;
+  background: var(--terra);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.2s;
+  margin-top: 4px;
+}
+
+.email-submit:hover { background: #8f6348; }
+
+.privacy {
+  font-size: 10px;
+  color: var(--border);
+  text-align: center;
+  margin-top: 8px;
+  letter-spacing: 0.04em;
+}
+
+/* INPUT AREA */
+.input-area {
+  border-top: 1px solid var(--border);
+  background: var(--white);
+  padding: 16px;
+  display: flex;
+  gap: 10px;
+  align-items: flex-end;
+}
+
+.input-wrap {
+  flex: 1;
+  background: var(--cream);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  padding: 11px 18px;
+  display: flex;
+  align-items: center;
+  transition: border-color 0.2s;
+}
+
+.input-wrap:focus-within { border-color: var(--sage); }
+
+#userInput {
+  flex: 1;
+  border: none;
+  background: transparent;
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  font-weight: 300;
+  color: var(--dark);
+  resize: none;
+  max-height: 120px;
+  line-height: 1.5;
+}
+
+#userInput:focus { outline: none; }
+#userInput::placeholder { color: var(--slate); }
+
+.send-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--sage);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s, transform 0.15s;
+  flex-shrink: 0;
+}
+
+.send-btn:hover { background: var(--deep); transform: scale(1.05); }
+.send-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+.send-btn svg { width: 16px; height: 16px; }
+
+/* REFINE AREA */
+.refine-area {
+  display: none;
+  border-top: 1px solid var(--border);
+  background: var(--cream-dark);
+  padding: 12px 16px;
+}
+
+.refine-area.active { display: block; }
+
+.refine-label {
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--deep);
+  margin-bottom: 8px;
+}
+
+.refine-row {
+  display: flex;
+  gap: 8px;
+}
+
+.refine-input {
+  flex: 1;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 10px 16px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 13px;
+  font-weight: 300;
+  color: var(--dark);
+}
+
+.refine-input:focus { outline: none; border-color: var(--deep); }
+
+.refine-btn {
+  padding: 10px 18px;
+  background: var(--deep);
+  color: #fff;
+  border: none;
+  border-radius: 20px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.2s;
+}
+
+.refine-btn:hover { background: #5a6b5d; }
+
+.error-msg {
+  font-size: 12px;
+  color: var(--terra);
+  padding: 6px 0;
+  display: none;
+}
+.error-msg.active { display: block; }
+
+@media (max-width: 520px) {
+  .header { padding: 32px 20px 24px; }
+  .msg-bubble { max-width: 88%; }
+  .email-gate { max-width: 92%; }
+}
 </style>
 </head>
 <body>
-<div class="container">
 
-<header>
-  <div class="eyebrow">✦ A free gift from Flourish & Flow ✦</div>
-  <h1>Your Daily<br><span class="accent">Rhythm</span></h1>
-  <p class="subtitle">A personalized daily flow built around your Human Design, your life, and the energy you're actually working with — generated just for you.</p>
-</header>
-
-<div id="formView">
-
-  <div class="form-section">
-    <div class="step-label">Step 01</div>
-    <div class="section-title">Your Human Design</div>
-    <div class="section-sub">Don't know yours yet? Get your free chart at mybodygraph.com — it takes 2 minutes.</div>
-
-    <div class="field-row">
-      <div class="field">
-        <label class="field-label">HD Type *</label>
-        <select id="hdType">
-          <option value="">Select your type</option>
-          <option>Manifestor</option>
-          <option>Generator</option>
-          <option>Manifesting Generator</option>
-          <option>Projector</option>
-          <option>Reflector</option>
-        </select>
-      </div>
-      <div class="field">
-        <label class="field-label">Authority</label>
-        <select id="authority">
-          <option value="">Select authority</option>
-          <option>Sacral</option>
-          <option>Emotional / Solar Plexus</option>
-          <option>Splenic</option>
-          <option>Ego / Heart</option>
-          <option>Self-Projected</option>
-          <option>Mental / Environment</option>
-          <option>Lunar</option>
-        </select>
-      </div>
-    </div>
-
-    <div class="field-row">
-      <div class="field">
-        <label class="field-label">Profile</label>
-        <select id="profile">
-          <option value="">Select profile</option>
-          <option>1/3 — Investigator/Martyr</option>
-          <option>1/4 — Investigator/Opportunist</option>
-          <option>2/4 — Hermit/Opportunist</option>
-          <option>2/5 — Hermit/Heretic</option>
-          <option>3/5 — Martyr/Heretic</option>
-          <option>3/6 — Martyr/Role Model</option>
-          <option>4/6 — Opportunist/Role Model</option>
-          <option>4/1 — Opportunist/Investigator</option>
-          <option>5/1 — Heretic/Investigator</option>
-          <option>5/2 — Heretic/Hermit</option>
-          <option>6/2 — Role Model/Hermit</option>
-          <option>6/3 — Role Model/Martyr</option>
-        </select>
-      </div>
-      <div class="field">
-        <label class="field-label">Strategy</label>
-        <select id="strategy">
-          <option value="">Select strategy</option>
-          <option>Respond (Generator / MG)</option>
-          <option>Inform then Initiate (Manifestor)</option>
-          <option>Wait for Invitation (Projector)</option>
-          <option>Wait a Lunar Cycle (Reflector)</option>
-        </select>
-      </div>
-    </div>
-
-    <div class="field-row">
-      <div class="field">
-        <label class="field-label">Not-Self Theme</label>
-        <select id="notSelf">
-          <option value="">Select yours</option>
-          <option>Frustration (Generator / MG)</option>
-          <option>Anger (Manifestor)</option>
-          <option>Bitterness (Projector)</option>
-          <option>Disappointment (Reflector)</option>
-        </select>
-      </div>
-      <div class="field">
-        <label class="field-label">Signature Theme</label>
-        <select id="signature">
-          <option value="">Select yours</option>
-          <option>Satisfaction (Generator / MG)</option>
-          <option>Peace (Manifestor)</option>
-          <option>Success (Projector)</option>
-          <option>Surprise (Reflector)</option>
-        </select>
-      </div>
-    </div>
-
-    <div class="field">
-      <label class="field-label">Defined Centers (select all that apply)</label>
-      <div class="field-hint">Your defined centers are the coloured/filled shapes on your chart. Leave blank if unsure.</div>
-      <div class="pill-group" id="centersGroup">
-        <label class="pill-wrap"><input type="checkbox" value="Head"><span class="pill">Head</span></label>
-        <label class="pill-wrap"><input type="checkbox" value="Ajna (Mind)"><span class="pill">Ajna / Mind</span></label>
-        <label class="pill-wrap"><input type="checkbox" value="Throat"><span class="pill">Throat</span></label>
-        <label class="pill-wrap"><input type="checkbox" value="G (Identity)"><span class="pill">G / Identity</span></label>
-        <label class="pill-wrap"><input type="checkbox" value="Heart / Ego"><span class="pill">Heart / Ego</span></label>
-        <label class="pill-wrap"><input type="checkbox" value="Sacral"><span class="pill">Sacral</span></label>
-        <label class="pill-wrap"><input type="checkbox" value="Solar Plexus"><span class="pill">Solar Plexus</span></label>
-        <label class="pill-wrap"><input type="checkbox" value="Spleen"><span class="pill">Spleen</span></label>
-        <label class="pill-wrap"><input type="checkbox" value="Root"><span class="pill">Root</span></label>
-      </div>
-    </div>
-
-    <div class="field">
-      <label class="field-label">Activated Gates (optional)</label>
-      <div class="field-hint">Find these on your bodygraph chart</div>
-      <input type="text" id="gates" placeholder="e.g. Gate 38, Gate 8, Gate 20...">
-    </div>
-
-    <div class="field">
-      <label class="field-label">Incarnation Cross (optional)</label>
-      <input type="text" id="cross" placeholder="e.g. Right Angle Cross of Tension">
-    </div>
-  </div>
-
-  <div class="form-section">
-    <div class="step-label">Step 02</div>
-    <div class="section-title">Your Current Life</div>
-    <div class="section-sub">The more honest you are here, the more accurate your rhythm will be.</div>
-
-    <div class="field-row">
-      <div class="field">
-        <label class="field-label">Work Schedule</label>
-        <select id="workSchedule">
-          <option value="">Select one</option>
-          <option>9-5 in office</option>
-          <option>9-5 remote / work from home</option>
-          <option>9-5 remote + building side business</option>
-          <option>Flexible / freelance</option>
-          <option>Shift work</option>
-          <option>Part time</option>
-          <option>Self-employed / entrepreneur</option>
-          <option>Currently not working</option>
-        </select>
-      </div>
-      <div class="field">
-        <label class="field-label">Living Situation</label>
-        <input type="text" id="living" placeholder="e.g. RV life with partner, home alone, apartment with kids...">
-      </div>
-    </div>
-
-    <div class="field-row">
-      <div class="field">
-        <label class="field-label">Natural Chronotype</label>
-        <select id="chronotype">
-          <option value="">Select one</option>
-          <option>Early bird — I peak before noon</option>
-          <option>Mid-day — I peak around midday</option>
-          <option>Afternoon — I peak in late afternoon</option>
-          <option>Night owl — I peak after 6pm</option>
-          <option>I honestly don't know yet</option>
-        </select>
-      </div>
-      <div class="field">
-        <label class="field-label">Sleep I need to feel good</label>
-        <select id="sleepHours">
-          <option value="">Select one</option>
-          <option>6 hours</option>
-          <option>7 hours</option>
-          <option>8 hours</option>
-          <option>9 hours</option>
-          <option>9+ hours</option>
-          <option>It varies a lot</option>
-        </select>
-      </div>
-    </div>
-
-    <div class="field">
-      <label class="field-label">Schedule flexibility</label>
-      <select id="workType">
-        <option value="">Select one</option>
-        <option>Fixed hours — very little flexibility</option>
-        <option>Employed with some flexibility in how I structure my day</option>
-        <option>Self-employed — full schedule flexibility</option>
-        <option>Employed + building something on the side</option>
-      </select>
-    </div>
-
-    <div class="field">
-      <label class="field-label">What does your current morning actually look like?</label>
-      <div class="field-hint">Be honest — not what you wish it looked like.</div>
-      <textarea id="currentMorning" placeholder="e.g. I wake up, immediately reach for my phone, scroll for 20 mins, rush to make coffee, feel behind before the day even starts..."></textarea>
-    </div>
-
-    <div class="field">
-      <label class="field-label">What does your daytime flow look like?</label>
-      <div class="field-hint">Work, breaks, energy peaks and crashes — what actually happens mid-day.</div>
-      <textarea id="currentDaytime" placeholder="e.g. Back to back meetings until 3pm, no real break, hit a wall around 2pm and reach for coffee, feel scattered and unfocused by afternoon..."></textarea>
-    </div>
-
-    <div class="field">
-      <label class="field-label">What does your current evening look like?</label>
-      <div class="field-hint">Evenings are where most rhythms fall apart — this matters.</div>
-      <textarea id="currentEvening" placeholder="e.g. I work until 9pm, eat late, watch TV to decompress, can't fall asleep even though I'm exhausted..."></textarea>
-    </div>
-
-    <div class="field">
-      <label class="field-label">What drains your energy most?</label>
-      <div class="field-hint">Select everything that resonates.</div>
-      <div class="pill-group" id="drainsGroup">
-        <label class="pill-wrap"><input type="checkbox" value="Sitting too long"><span class="pill">Sitting too long</span></label>
-        <label class="pill-wrap"><input type="checkbox" value="Decision fatigue"><span class="pill">Decision fatigue</span></label>
-        <label class="pill-wrap"><input type="checkbox" value="No alone time"><span class="pill">No alone time</span></label>
-        <label class="pill-wrap"><input type="checkbox" value="Too many screens"><span class="pill">Too many screens</span></label>
-        <label class="pill-wrap"><input type="checkbox" value="Inconsistent sleep"><span class="pill">Inconsistent sleep</span></label>
-        <label class="pill-wrap"><input type="checkbox" value="Overwhelm"><span class="pill">Overwhelm</span></label>
-        <label class="pill-wrap"><input type="checkbox" value="Lack of movement"><span class="pill">Lack of movement</span></label>
-        <label class="pill-wrap"><input type="checkbox" value="Switching between roles"><span class="pill">Switching roles</span></label>
-        <label class="pill-wrap"><input type="checkbox" value="Noise and overstimulation"><span class="pill">Overstimulation</span></label>
-        <label class="pill-wrap"><input type="checkbox" value="People pleasing"><span class="pill">People pleasing</span></label>
-        <label class="pill-wrap"><input type="checkbox" value="No creative outlet"><span class="pill">No creative outlet</span></label>
-        <label class="pill-wrap"><input type="checkbox" value="Emotional labor"><span class="pill">Emotional labor</span></label>
-        <label class="pill-wrap"><input type="checkbox" value="Doom scrolling"><span class="pill">Doom scrolling</span></label>
-        <label class="pill-wrap"><input type="checkbox" value="No work-life boundary"><span class="pill">No work/life boundary</span></label>
-      </div>
-    </div>
-
-    <div class="field">
-      <label class="field-label">My biggest sabotage pattern</label>
-      <select id="sabotage">
-        <option value="">Select one</option>
-        <option>Staying up too late and paying for it all day</option>
-        <option>Reaching for my phone first thing in the morning</option>
-        <option>Skipping movement when life gets busy</option>
-        <option>Saying yes to too much and burning out</option>
-        <option>Pushing through when depleted instead of resting</option>
-        <option>Inconsistent eating — skipping meals or eating late</option>
-        <option>Starting strong then losing momentum mid-month</option>
-        <option>Comparing myself to others and losing my thread</option>
-      </select>
-    </div>
-  </div>
-
-  <div class="form-section">
-    <div class="step-label">Step 03</div>
-    <div class="section-title">Practices & Goals</div>
-    <div class="section-sub">What nourishes you and what you're building toward</div>
-
-    <div class="field">
-      <label class="field-label">Practices you love or want more of</label>
-      <div class="field-hint">e.g. yoga, meditation, breathwork, journaling, walking, gym, reading, sound healing, somatic movement, cold exposure, creative work, prayer, nature time, dancing...</div>
-      <textarea id="practices" placeholder="Write any practices that matter to you — anything goes..."></textarea>
-    </div>
-
-    <div class="field">
-      <label class="field-label">Spiritual or religious practice?</label>
-      <select id="spiritual">
-        <option value="">Select one</option>
-        <option>Yes — it's central to my daily life</option>
-        <option>Yes — I want it to be more consistent</option>
-        <option>Somewhat — I'm still exploring</option>
-        <option>No — but I'm open to it</option>
-        <option>No — not part of my life</option>
-      </select>
-    </div>
-
-    <div class="field">
-      <label class="field-label">What does your body need more of right now?</label>
-      <textarea id="bodyNeeds" placeholder="e.g. More water, less caffeine, earlier meals, more rest, more time outside, less alcohol..."></textarea>
-    </div>
-
-    <div class="field-row">
-      <div class="field">
-        <label class="field-label">Desired Wake Time</label>
-        <input type="time" id="wakeTime" value="06:45">
-      </div>
-      <div class="field">
-        <label class="field-label">Desired Bedtime</label>
-        <input type="time" id="bedTime" value="22:30">
-      </div>
-    </div>
-
-    <div class="field">
-      <label class="field-label">How I want to feel at the end of each day</label>
-      <select id="endFeeling">
-        <option value="">Select one</option>
-        <option>Restored</option>
-        <option>Accomplished</option>
-        <option>Connected</option>
-        <option>Peaceful</option>
-        <option>Energized</option>
-        <option>Alive</option>
-        <option>Grounded</option>
-        <option>Satisfied</option>
-      </select>
-    </div>
-
-    <div class="field">
-      <label class="field-label">Your top goals right now</label>
-      <textarea id="goals" placeholder="e.g. Build a personal brand alongside my 9-5, feel more energized, create a morning routine I actually keep, deepen my spiritual practice..."></textarea>
-    </div>
-
-    <div class="field">
-      <label class="field-label">Anything else your rhythm needs to honor?</label>
-      <textarea id="extra" placeholder="e.g. I travel constantly in an RV, I have a chronic illness, I'm a single parent, I'm recovering from burnout..."></textarea>
-    </div>
-  </div>
-
-  <button class="generate-btn" onclick="showEmailGate()">✦ Generate My Daily Rhythm ✦</button>
-  <div class="error-msg" id="errorMsg"></div>
-
+<div class="header">
+  <div class="header-eyebrow">✦ A free gift from Flourish & Flow ✦</div>
+  <h1>Your Daily<br><span>Rhythm</span></h1>
+  <p class="header-sub">A conversation that builds your personalized daily flow</p>
 </div>
 
-<div class="email-gate" id="emailGate">
-  <h2>Your rhythm is<br>ready to be revealed</h2>
-  <p>Drop your name and email below — your personalized daily rhythm will appear right here, plus you'll be first to hear about future resources from Flourish & Flow.</p>
-  <div class="email-form">
-    <input type="text" id="firstName" placeholder="First name">
-    <input type="email" id="emailInput" placeholder="Your email address">
-    <button class="email-submit" onclick="submitAndGenerate()">Yes — Reveal My Rhythm →</button>
-    <div class="privacy">No spam, ever. Unsubscribe anytime. 🤍</div>
-  </div>
-  <div class="error-msg" id="emailErrorMsg" style="text-align:left;margin-top:14px;"></div>
-</div>
-
-<div class="loading" id="loadingView">
-  <div class="orbs"><div class="orb"></div><div class="orb"></div><div class="orb"></div></div>
-  <p>Reading your energy blueprint...<br><em>crafting your personal rhythm</em></p>
-</div>
-
-<div class="result" id="resultView">
-  <div class="result-header">
-    <div class="eyebrow">✦ Your personal blueprint ✦</div>
-    <h2>Your Daily Rhythm</h2>
-    <p>Revisit this whenever life shifts — your design is always your guide</p>
-  </div>
-  <div class="result-card">
-    <div class="result-body" id="resultContent"></div>
+<div class="chat-wrap">
+  <div class="messages" id="messages">
+    <!-- Messages appear here -->
   </div>
 
-  <div class="calendar-section">
-    <div class="calendar-section-eyebrow">✦ Lock it in ✦</div>
-    <h3>Add Your Rhythm<br>to Your Calendar</h3>
-    <p>Your rhythm only works if it's in your day. Add these recurring reminders now — so your routine is already waiting for you tomorrow morning.</p>
-    <div class="calendar-events-preview" id="calendarEventsPreview"></div>
-    <div class="calendar-btns">
-      <button class="btn-cal-google" onclick="addAllToGoogle()">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="17" rx="2" stroke="currentColor" stroke-width="1.8"/><path d="M3 9h18M8 2v4M16 2v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-        Add to Google Calendar
-      </button>
-      <button class="btn-cal-ics" onclick="downloadICS()">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M12 3v12M12 15l-4-4M12 15l4-4M3 19h18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        Download .ics File
-      </button>
+  <div class="typing" id="typing">
+    <div class="typing-avatar">🌿</div>
+    <div class="typing-dots">
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
     </div>
-    <div class="cal-note">Works with Apple Calendar, Outlook, and any calendar app</div>
   </div>
 
-  <div class="refine-section">
-    <div class="refine-eyebrow">✦ Something feel off? ✦</div>
-    <h3>Adjust Your Rhythm</h3>
-    <p>Tell me what isn't quite right — and I'll regenerate it with your feedback folded in. Your original answers stay exactly as they are.</p>
-    <textarea class="refine-textarea" id="refineFeedback" placeholder="e.g. The mornings feel too rushed — I need at least 30 mins of quiet before anything else..."></textarea>
-    <button class="btn-refine" id="refineBtn" onclick="refineRhythm()">↻ Refine My Rhythm</button>
-    <div class="error-msg" id="refineErrorMsg" style="margin-top:10px;"></div>
+  <div class="input-area" id="inputArea">
+    <div class="input-wrap">
+      <textarea
+        id="userInput"
+        placeholder="Share your thoughts..."
+        rows="1"
+      ></textarea>
+    </div>
+    <button class="send-btn" id="sendBtn" onclick="sendMessage()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M22 2L11 13M22 2L15 22L11 13L2 9L22 2Z"/>
+      </svg>
+    </button>
   </div>
 
-  <div class="action-row">
-    <button class="btn-ghost" onclick="resetForm()">← Start Over</button>
-    <button class="btn-filled" onclick="copyResult()">Copy My Rhythm</button>
+  <div class="refine-area" id="refineArea">
+    <div class="refine-label">✦ Something feel off? Refine your rhythm</div>
+    <div class="refine-row">
+      <input class="refine-input" id="refineInput" placeholder="Tell me what to adjust...">
+      <button class="refine-btn" onclick="refineRhythm()">↻ Refine</button>
+    </div>
+    <div class="error-msg" id="refineError"></div>
   </div>
 </div>
 
-<footer>Made with 🤍 &nbsp;·&nbsp; <a href="https://stacilamp.com">stacilamp.com</a> &nbsp;·&nbsp; Powered by Human Design + Claude AI</footer>
-
-</div>
 <script>
-let parsedEvents=[],userFirstName='',lastRhythmText='',lastVals={};
-function getChecked(id){return Array.from(document.getElementById(id).querySelectorAll('input:checked')).map(e=>e.value)}
-function formatTime(t){if(!t)return'flexible';const[h,m]=t.split(':');const hr=parseInt(h);return`${hr%12||12}:${m} ${hr>=12?'PM':'AM'}`}
-function showEmailGate(){if(!document.getElementById('hdType').value){showErr('errorMsg','Please select your Human Design type to continue.');return}hideErr('errorMsg');document.getElementById('formView').style.display='none';document.getElementById('emailGate').classList.add('active');window.scrollTo({top:0,behavior:'smooth'})}
-async function submitAndGenerate(){
-  const name=document.getElementById('firstName').value.trim();
-  const email=document.getElementById('emailInput').value.trim();
-  if(!email||!email.includes('@')){showErr('emailErrorMsg','Please enter a valid email address.');return}
-  hideErr('emailErrorMsg');
-  try{await fetch('https://api.flodesk.com/v1/subscribers',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Basic '+btoa('fd_key_12cf5aafc4e1422bbd567dbb09e9de35.NwwaMTDxv4VSTZdAS9xShIO6rnlj2sRwN3vdEyQ8ZYfXQhISTGdlGfloeXIJypO68EL0J1vuqw8AK3a6gcYqKKu0d0UY1rP4cpX1hp4pLWP0JaiWLqzuUqLbInyNKbw8Mmrx9JplggkQGOZdC8K834HR3WppljdmvtKwc01A3lS8NNbsFHU2ceXwen86w6vN:')},body:JSON.stringify({email,first_name:name,segments:['69eff4c98f1883a079f6de18']})})}catch(e){console.error('Flodesk:',e)}
-  userFirstName=name;
-  document.getElementById('emailGate').classList.remove('active');
-  generateRhythm(name);
-}
-async function generateRhythm(firstName){
-  const v={
-    hdType:document.getElementById('hdType').value,
-    authority:document.getElementById('authority').value,
-    profile:document.getElementById('profile').value,
-    strategy:document.getElementById('strategy').value,
-    notSelf:document.getElementById('notSelf').value,
-    signature:document.getElementById('signature').value,
-    centers:getChecked('centersGroup'),
-    gates:document.getElementById('gates').value,
-    cross:document.getElementById('cross').value,
-    work:document.getElementById('workSchedule').value,
-    workType:document.getElementById('workType').value,
-    living:document.getElementById('living').value,
-    chronotype:document.getElementById('chronotype').value,
-    sleepHours:document.getElementById('sleepHours').value,
-    morning:document.getElementById('currentMorning').value,
-    daytime:document.getElementById('currentDaytime').value,
-    evening:document.getElementById('currentEvening').value,
-    drains:getChecked('drainsGroup'),
-    sabotage:document.getElementById('sabotage').value,
-    practices:document.getElementById('practices').value,
-    spiritual:document.getElementById('spiritual').value,
-    bodyNeeds:document.getElementById('bodyNeeds').value,
-    wake:formatTime(document.getElementById('wakeTime').value),
-    wakeRaw:document.getElementById('wakeTime').value||'06:45',
-    bed:formatTime(document.getElementById('bedTime').value),
-    endFeeling:document.getElementById('endFeeling').value,
-    goals:document.getElementById('goals').value,
-    extra:document.getElementById('extra').value,
-  };
-  lastVals=v;
-  document.getElementById('loadingView').classList.add('active');
-  window.scrollTo({top:0,behavior:'smooth'});
-  const name=firstName||'this person';
-  const allCenters=['Head','Ajna (Mind)','Throat','G (Identity)','Heart / Ego','Sacral','Solar Plexus','Spleen','Root'];
-  const defined=v.centers.length?v.centers.join(', '):'unknown';
-  const undefined_c=v.centers.length?allCenters.filter(c=>!v.centers.includes(c)).join(', '):'unknown';
-  const prompt=`You are a deeply knowledgeable Human Design expert and holistic daily rhythm coach. Create a rhythm so personalized that ${name} reads it and thinks "how does it know me this well."
+const FLODESK_API_KEY = 'fd_key_12cf5aafc4e1422bbd567dbb09e9de35.NwwaMTDxv4VSTZdAS9xShIO6rnlj2sRwN3vdEyQ8ZYfXQhISTGdlGfloeXIJypO68EL0J1vuqw8AK3a6gcYqKKu0d0UY1rP4cpX1hp4pLWP0JaiWLqzuUqLbInyNKbw8Mmrx9JplggkQGOZdC8K834HR3WppljdmvtKwc01A3lS8NNbsFHU2ceXwen86w6vN';
+const FLODESK_SEGMENT_ID = '69eff4c98f1883a079f6de18';
 
-HUMAN DESIGN — weave this throughout the entire rhythm, not just the opening:
-- Type: ${v.hdType}
-- Authority: ${v.authority||'not provided'} — this shapes HOW they make decisions and when to act
-- Profile: ${v.profile||'not provided'} — this shapes their life theme and learning style
-- Strategy: ${v.strategy||'not provided'}
-- Not-Self Theme: ${v.notSelf||'not provided'} — reference this as the WARNING SIGNAL they are off track
-- Signature Theme: ${v.signature||'not provided'} — reference this as THE DESTINATION we are building toward
-- Defined Centers: ${defined} — consistent, reliable energy here; they can trust this
-- Undefined Centers: ${undefined_c} — they absorb and amplify others energy here; needs protection and decompression daily
-- Activated Gates: ${v.gates||'not provided'}
-- Incarnation Cross: ${v.cross||'not provided'}
+let conversationHistory = [];
+let userFirstName = '';
+let userEmail = '';
+let emailCaptured = false;
+let rhythmGenerated = false;
+let lastRhythmText = '';
+let parsedEvents = [];
+let awaitingEmail = false;
+let conversationSummary = '';
 
-THEIR LIFE:
-- Work: ${v.work||'not specified'} | Flexibility: ${v.workType||'not specified'}
-- Living: ${v.living||'not specified'} | Chronotype: ${v.chronotype||'not specified'}
-- Sleep needed: ${v.sleepHours||'not specified'}
-- Wake time: ${v.wake} | Bedtime: ${v.bed}
-- Current morning: ${v.morning||'not described'}
-- Current daytime: ${v.daytime||'not described'}
-- Current evening: ${v.evening||'not described'}
-- Biggest sabotage: ${v.sabotage||'not specified'}
-- Energy drains: ${v.drains.length?v.drains.join(', '):'not specified'}
+const SYSTEM_PROMPT = `You are a warm, wise guide from Flourish & Flow — a women's wellness community built around Human Design-aligned living. You're having a genuine one-on-one conversation to help someone build their perfect daily rhythm.
 
-WHAT NOURISHES THEM:
-- Practices: ${v.practices||'not specified'}
-- Spiritual practice: ${v.spiritual||'not specified'}
-- Body needs: ${v.bodyNeeds||'not specified'}
-- How they want to feel at end of day: ${v.endFeeling||'not specified'}
+Your personality: Warm, curious, non-judgmental. You feel like a knowledgeable friend who genuinely cares — not a therapist, not a guru. Think: woman who went first, turning around to say "come look at this."
 
-GOALS: ${v.goals||'not specified'}
-ADDITIONAL CONTEXT: ${v.extra||'none'}
+YOUR GOAL: Through natural conversation, gather enough information to build a truly personalized daily rhythm. You need to understand:
+- Their Human Design type, authority, and profile (if they know it)
+- Their current daily reality — morning, daytime, evening
+- What drains them and what lights them up
+- Their work schedule and living situation  
+- Practices they love or want more of
+- Their wake time and sleep needs
+- Their current goals and what they're building toward
 
-Write their rhythm using these sections (## for headers):
+HOW TO CONVERSE:
+- Ask ONE question at a time — never multiple questions in one message
+- Respond warmly to what they share before asking the next question
+- Follow the thread of what they say — if they mention something interesting, explore it
+- Keep your messages short — 2-4 sentences max before your question
+- Use their name once you know it
+- After 6-10 exchanges you'll have enough — don't drag it out
+- When you have enough information, say exactly: "I have everything I need to build your rhythm. Give me just a moment..."
 
-Opening paragraph: Speak directly to their HD type. Name their authority and how it shapes decision-making in their day. Reference their not-self as the signal they have gone off track. Name their signature as what we are building toward. Make it feel like you see them completely.
+IMPORTANT RULES:
+- Never mention that you're an AI or that this is automated
+- Never ask for their email — that happens separately
+- Keep the conversation feeling alive and personal
+- Reference their Human Design details throughout to show you're listening
+- When you say you have enough info, STOP asking questions
 
-## Morning Ritual
-Specific time blocks from wake to start of work. Weave their practices in naturally. Explain WHY each element honors their specific design — reference their defined and undefined centers directly. Address their current morning sabotage and offer the reframe.
+Start the conversation with a warm, brief welcome and ask for their first name. Keep it to 2-3 sentences max.`;
 
-## Midday Reset
-Honor their work type and living situation specifically. If undefined Sacral — rest is non-negotiable. If Generator or MG — sacral check-in. Be design-specific not generic.
+const RHYTHM_PROMPT = (summary, name) => `Based on this conversation with ${name}, create their personalized daily rhythm.
 
+CONVERSATION SUMMARY:
+${summary}
+
+Write a warm, specific daily rhythm with these sections (## for headers):
+
+## Your Morning Ritual
+## Midday Reset  
 ## Afternoon Flow
-Work with their chronotype. Address their specific afternoon drains. Include movement if needed. Specific times.
-
 ## Evening Transition
-This is likely where their rhythm is breaking down — speak to it directly using their current evening description. Sequence their practices in a way that helps them discharge the day and decompress from conditioning in undefined centers. Specific sequence.
-
-## Bedtime Anchor
-Based on their desired bedtime and sleep needs. Two or three specific steps. Reference their authority if relevant — emotional authority needs wave-check before sleep, splenic needs body trust.
-
+## Bedtime
 ## Your 3 Non-Negotiables
-Three practices most essential for their specific type and authority. Bold each with **. Explain why it is non-negotiable for their design specifically — not generic advice.
 
-Closing paragraph: Name their signature theme. Speak to their specific goals. Give them permission. Warm and true.
+Opening: 2-3 warm sentences speaking directly to their design and what this rhythm honors.
+Closing: 2 sentences referencing their specific goals and signature theme.
 
-Rules: Reference HD throughout — every section. Speak to undefined centers specifically. Name not-self as warning, signature as destination. No generic wellness cliches. Warm wise soulful tone. Maximum 2 emojis.
+Be specific to what they shared. Reference their HD details. No generic wellness advice.
 
+After the rhythm, include:
 ---CALENDAR_EVENTS---
 TIME:HH:MM|TITLE:Event name|DURATION:30|RECUR:DAILY
-(5-8 anchor events from the rhythm in 24h format)
+(5-7 key anchor events)
 ---END_CALENDAR_EVENTS---`;
 
-  try{
-    const res=await fetch('/.netlify/functions/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:[{role:'user',content:prompt}]})});
-    const data=await res.json();
-    if(!res.ok||!data.content)throw new Error(data.error?.message||'Error');
-    const text=data.content.map(b=>b.text||'').join('');
-    const split=text.split('---CALENDAR_EVENTS---');
-    const rhythmText=split[0].trim();
-    const calRaw=split[1]?split[1].split('---END_CALENDAR_EVENTS---')[0].trim():'';
-    parsedEvents=parseCalendarEvents(calRaw,v.wakeRaw);
-    lastRhythmText=rhythmText;
-    showResult(rhythmText,firstName);
-  }catch(err){
-    document.getElementById('loadingView').classList.remove('active');
-    document.getElementById('emailGate').classList.add('active');
-    showErr('emailErrorMsg','Something went wrong — please try again in a moment.');
+// Auto-resize textarea
+document.getElementById('userInput').addEventListener('input', function() {
+  this.style.height = 'auto';
+  this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+});
+
+document.getElementById('userInput').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    sendMessage();
+  }
+});
+
+function addMessage(role, content, type = 'normal') {
+  const messages = document.getElementById('messages');
+
+  if (role === 'email-gate') {
+    const gate = document.createElement('div');
+    gate.className = 'email-gate';
+    gate.id = 'emailGate';
+    gate.innerHTML = `
+      <h3>Almost there —</h3>
+      <p>Drop your email below and I'll reveal your personalized daily rhythm right here. You'll also be the first to hear about future resources from Flourish & Flow.</p>
+      <div class="email-fields">
+        <input type="email" id="emailInput" placeholder="Your email address">
+      </div>
+      <button class="email-submit" onclick="submitEmail()">Yes — Reveal My Rhythm →</button>
+      <div class="privacy">No spam, ever. Unsubscribe anytime. 🤍</div>
+      <div class="error-msg" id="emailError"></div>
+    `;
+    messages.appendChild(gate);
+    scrollToBottom();
+    return;
+  }
+
+  const msg = document.createElement('div');
+  msg.className = `msg ${role}${type === 'result' ? ' result' : ''}`;
+
+  const avatar = document.createElement('div');
+  avatar.className = 'msg-avatar';
+  avatar.textContent = role === 'bot' ? '🌿' : (userFirstName ? userFirstName[0].toUpperCase() : 'Y');
+
+  const bubble = document.createElement('div');
+  bubble.className = 'msg-bubble';
+
+  if (type === 'result') {
+    bubble.innerHTML = formatRhythm(content);
+  } else {
+    bubble.innerHTML = content.replace(/\n/g, '<br>');
+  }
+
+  msg.appendChild(avatar);
+  msg.appendChild(bubble);
+  messages.appendChild(msg);
+  scrollToBottom();
+}
+
+function formatRhythm(text) {
+  let html = text
+    .replace(/^## (.+)$/gm, '<h2>$1</h2>')
+    .replace(/^### (.+)$/gm, '<h3>$1</h3>')
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g, '<em>$1</em>')
+    .replace(/\n\n/g, '</p><p>')
+    .replace(/\n/g, '<br>');
+  html = '<p>' + html + '</p>';
+  html = html.replace(/<p>(<h[23]>)/g, '$1').replace(/(<\/h[23]>)<\/p>/g, '$1');
+  return html;
+}
+
+function showTyping() {
+  document.getElementById('typing').classList.add('active');
+  scrollToBottom();
+}
+
+function hideTyping() {
+  document.getElementById('typing').classList.remove('active');
+}
+
+function setInputDisabled(disabled) {
+  document.getElementById('userInput').disabled = disabled;
+  document.getElementById('sendBtn').disabled = disabled;
+}
+
+function scrollToBottom() {
+  setTimeout(() => {
+    const messages = document.getElementById('messages');
+    messages.scrollTop = messages.scrollHeight;
+    window.scrollTo(0, document.body.scrollHeight);
+  }, 100);
+}
+
+async function sendMessage() {
+  const input = document.getElementById('userInput');
+  const text = input.value.trim();
+  if (!text || document.getElementById('sendBtn').disabled) return;
+
+  input.value = '';
+  input.style.height = 'auto';
+
+  // Extract first name from early messages
+  if (!userFirstName && conversationHistory.length <= 2) {
+    const words = text.split(' ');
+    if (words.length <= 3) userFirstName = words[0];
+  }
+
+  addMessage('user', text);
+  conversationHistory.push({ role: 'user', content: text });
+  setInputDisabled(true);
+  showTyping();
+
+  try {
+    const res = await fetch('/.netlify/functions/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        system: SYSTEM_PROMPT,
+        messages: conversationHistory
+      })
+    });
+
+    const data = await res.json();
+    if (!res.ok || !data.content) throw new Error('API error');
+
+    const reply = data.content.map(b => b.text || '').join('').trim();
+    hideTyping();
+
+    // Check if Claude signals it has enough info
+    if (reply.includes("I have everything I need to build your rhythm")) {
+      conversationHistory.push({ role: 'assistant', content: reply });
+      addMessage('bot', reply);
+      conversationSummary = buildSummary();
+
+      // Show email gate
+      setTimeout(() => {
+        addMessage('email-gate', '');
+        setInputDisabled(true);
+      }, 800);
+    } else {
+      conversationHistory.push({ role: 'assistant', content: reply });
+      addMessage('bot', reply);
+      setInputDisabled(false);
+      document.getElementById('userInput').focus();
+    }
+
+  } catch(err) {
+    hideTyping();
+    addMessage('bot', "I'm so sorry — something went wrong on my end. Please try sending that again.");
+    setInputDisabled(false);
     console.error(err);
   }
 }
-function parseCalendarEvents(raw,wakeTime){
-  if(!raw)return getFallbackEvents(wakeTime);
-  const lines=raw.split('\n').filter(l=>l.includes('TIME:')&&l.includes('TITLE:'));
-  const events=lines.map(line=>{const get=k=>{const m=line.match(new RegExp(k+':([^|]+)'));return m?m[1].trim():''};return{time:get('TIME'),title:get('TITLE'),duration:parseInt(get('DURATION'))||30,recur:'DAILY'}}).filter(e=>e.time&&e.title);
-  return events.length>=3?events:getFallbackEvents(wakeTime);
+
+function buildSummary() {
+  return conversationHistory
+    .map(m => `${m.role === 'user' ? 'Her' : 'Guide'}: ${m.content}`)
+    .join('\n');
 }
-function getFallbackEvents(wakeTime){
-  const[h,m]=(wakeTime||'06:45').split(':').map(Number);
-  const add=(bh,bm,mins)=>{const t=bh*60+bm+mins;return`${String(Math.floor(t/60)%24).padStart(2,'0')}:${String(t%60).padStart(2,'0')}`};
-  return[
-    {time:`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`,title:'Wake + Morning Movement',duration:15,recur:'DAILY'},
-    {time:add(h,m,20),title:'Journal + Creative Time',duration:45,recur:'DAILY'},
-    {time:'12:00',title:'Midday Reset + Walk',duration:30,recur:'DAILY'},
-    {time:'17:00',title:'Yoga + Work Close',duration:45,recur:'DAILY'},
-    {time:'21:00',title:'Evening Wind-Down',duration:30,recur:'DAILY'},
-    {time:'22:15',title:'Phone Down + Rest',duration:15,recur:'DAILY'},
+
+async function submitEmail() {
+  const email = document.getElementById('emailInput').value.trim();
+  if (!email || !email.includes('@')) {
+    document.getElementById('emailError').textContent = 'Please enter a valid email.';
+    document.getElementById('emailError').classList.add('active');
+    return;
+  }
+
+  userEmail = email;
+  document.getElementById('emailError').classList.remove('active');
+  document.getElementById('emailGate').style.opacity = '0.5';
+  document.querySelector('.email-submit').textContent = 'Building your rhythm...';
+  document.querySelector('.email-submit').disabled = true;
+
+  // Capture to Flodesk silently
+  try {
+    await fetch('https://api.flodesk.com/v1/subscribers', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Basic ' + btoa(FLODESK_API_KEY + ':')
+      },
+      body: JSON.stringify({
+        email: userEmail,
+        first_name: userFirstName,
+        segments: [FLODESK_SEGMENT_ID]
+      })
+    });
+  } catch(err) {
+    console.error('Flodesk error:', err);
+  }
+
+  // Remove gate and generate rhythm
+  document.getElementById('emailGate').remove();
+  generateRhythm();
+}
+
+async function generateRhythm() {
+  showTyping();
+
+  try {
+    const prompt = RHYTHM_PROMPT(conversationSummary, userFirstName || 'her');
+
+    const res = await fetch('/.netlify/functions/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+
+    const data = await res.json();
+    if (!res.ok || !data.content) throw new Error('API error');
+
+    const text = data.content.map(b => b.text || '').join('').trim();
+    const split = text.split('---CALENDAR_EVENTS---');
+    const rhythmText = split[0].trim();
+    const calRaw = split[1] ? split[1].split('---END_CALENDAR_EVENTS---')[0].trim() : '';
+
+    lastRhythmText = rhythmText;
+    parsedEvents = parseCalendarEvents(calRaw);
+    rhythmGenerated = true;
+
+    hideTyping();
+    addMessage('bot', `Here's your personalized daily rhythm, ${userFirstName || 'beautiful'} — built just for you. 🌿`);
+    setTimeout(() => {
+      addMessage('bot', rhythmText, 'result');
+      setTimeout(() => {
+        addCalendarCard();
+        document.getElementById('refineArea').classList.add('active');
+      }, 400);
+    }, 300);
+
+  } catch(err) {
+    hideTyping();
+    addMessage('bot', "Something went wrong generating your rhythm. Please refresh and try again.");
+    console.error(err);
+  }
+}
+
+function addCalendarCard() {
+  const messages = document.getElementById('messages');
+  const msg = document.createElement('div');
+  msg.className = 'msg bot';
+
+  const avatar = document.createElement('div');
+  avatar.className = 'msg-avatar';
+  avatar.textContent = '🌿';
+
+  const bubble = document.createElement('div');
+  bubble.className = 'msg-bubble';
+
+  let eventsHtml = parsedEvents.map(evt => {
+    const [h, m] = evt.time.split(':').map(Number);
+    const hr = h % 12 || 12;
+    const ampm = h >= 12 ? 'PM' : 'AM';
+    return `<div class="cal-event">
+      <span class="cal-event-time">${hr}:${String(m).padStart(2,'0')} ${ampm}</span>
+      <span class="cal-event-name">${evt.title}</span>
+    </div>`;
+  }).join('');
+
+  bubble.innerHTML = `
+    <p>Lock these in so your rhythm is already waiting for you tomorrow morning. 🌿</p>
+    <div class="calendar-card">
+      <div class="calendar-card-title">✦ Your anchor events</div>
+      <div class="cal-events">${eventsHtml}</div>
+      <div class="cal-btns">
+        <button class="cal-btn cal-btn-dark" onclick="addAllToGoogle()">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg>
+          Add to Google Calendar
+        </button>
+        <button class="cal-btn cal-btn-outline" onclick="downloadICS()">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12M12 15l-4-4M12 15l4-4M3 19h18" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Download .ics
+        </button>
+      </div>
+    </div>
+  `;
+
+  msg.appendChild(avatar);
+  msg.appendChild(bubble);
+  messages.appendChild(msg);
+  scrollToBottom();
+}
+
+function parseCalendarEvents(raw) {
+  if (!raw) return getDefaultEvents();
+  const lines = raw.split('\n').filter(l => l.includes('TIME:') && l.includes('TITLE:'));
+  const events = lines.map(line => {
+    const get = (key) => { const m = line.match(new RegExp(key + ':([^|]+)')); return m ? m[1].trim() : ''; };
+    return { time: get('TIME'), title: get('TITLE'), duration: parseInt(get('DURATION')) || 30 };
+  }).filter(e => e.time && e.title);
+  return events.length >= 3 ? events : getDefaultEvents();
+}
+
+function getDefaultEvents() {
+  return [
+    { time: '06:45', title: 'Wake + Morning Movement', duration: 15 },
+    { time: '07:15', title: 'Journal + Creative Time', duration: 45 },
+    { time: '12:00', title: 'Midday Reset', duration: 30 },
+    { time: '17:00', title: 'Yoga + Work Close', duration: 45 },
+    { time: '21:00', title: 'Evening Wind-Down', duration: 30 },
   ];
 }
-function showResult(text,firstName){
-  document.getElementById('loadingView').classList.remove('active');
-  let html=text.replace(/^## (.+)$/gm,'<h2>$1</h2>').replace(/^### (.+)$/gm,'<h3>$1</h3>').replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/\*(.+?)\*/g,'<em>$1</em>').replace(/\n\n/g,'</p><p>').replace(/\n/g,'<br>');
-  html='<p>'+html+'</p>';
-  html=html.replace(/<p>(<h[23]>)/g,'$1').replace(/(<\/h[23]>)<\/p>/g,'$1');
-  document.getElementById('resultContent').innerHTML=html;
-  renderCalendarPreview();
-  document.getElementById('resultView').classList.add('active');
-  window.scrollTo({top:0,behavior:'smooth'});
-}
-function renderCalendarPreview(){
-  const c=document.getElementById('calendarEventsPreview');c.innerHTML='';
-  parsedEvents.forEach(evt=>{
-    const pill=document.createElement('div');pill.className='cal-event-pill';
-    const[h,m]=evt.time.split(':').map(Number);const hr=h%12||12;const ampm=h>=12?'PM':'AM';
-    pill.innerHTML=`<span class="cal-event-time">${hr}:${String(m).padStart(2,'0')} ${ampm}</span><span class="cal-event-name">${evt.title}</span>`;
-    c.appendChild(pill);
+
+function addAllToGoogle() {
+  const today = new Date();
+  const dateStr = today.toISOString().slice(0,10).replace(/-/g,'');
+  const pad = n => String(n).padStart(2,'0');
+  parsedEvents.forEach((evt, i) => {
+    setTimeout(() => {
+      const [h, m] = evt.time.split(':').map(Number);
+      const startDT = `${dateStr}T${pad(h)}${pad(m)}00`;
+      const endMins = h * 60 + m + evt.duration;
+      const endH = Math.floor(endMins / 60) % 24;
+      const endM = endMins % 60;
+      const endDT = `${dateStr}T${pad(endH)}${pad(endM)}00`;
+      const title = encodeURIComponent(`🌿 ${evt.title}`);
+      const details = encodeURIComponent('Part of your personalized daily rhythm from stacilamp.com');
+      window.open(`https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${startDT}/${endDT}&details=${details}&recur=RRULE:FREQ%3DDAILY`, '_blank');
+    }, i * 600);
   });
 }
-function addAllToGoogle(){
-  if(!parsedEvents.length)return;
-  const today=new Date();const dateStr=today.toISOString().slice(0,10).replace(/-/g,'');
-  parsedEvents.forEach((evt,i)=>{
-    setTimeout(()=>{
-      const[h,m]=evt.time.split(':').map(Number);
-      const startDT=`${dateStr}T${String(h).padStart(2,'0')}${String(m).padStart(2,'0')}00`;
-      const endMins=h*60+m+evt.duration;const endH=Math.floor(endMins/60)%24;const endM=endMins%60;
-      const endDT=`${dateStr}T${String(endH).padStart(2,'0')}${String(endM).padStart(2,'0')}00`;
-      const url=`https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent('🌿 '+evt.title)}&dates=${startDT}/${endDT}&details=${encodeURIComponent('Part of your personalized daily rhythm from stacilamp.com')}&recur=RRULE:FREQ%3DDAILY`;
-      window.open(url,'_blank');
-    },i*600);
-  });
-}
-function downloadICS(){
-  if(!parsedEvents.length)return;
-  const today=new Date();const pad=n=>String(n).padStart(2,'0');
-  const dateStr=`${today.getFullYear()}${pad(today.getMonth()+1)}${pad(today.getDate())}`;
-  const stampStr=`${dateStr}T${pad(today.getHours())}${pad(today.getMinutes())}${pad(today.getSeconds())}Z`;
-  const calName=userFirstName?`${userFirstName}'s Daily Rhythm`:'Your Daily Rhythm';
-  let ics=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Flourish & Flow//EN',`X-WR-CALNAME:${calName}`,'CALSCALE:GREGORIAN','METHOD:PUBLISH'];
-  parsedEvents.forEach((evt,i)=>{
-    const[h,m]=evt.time.split(':').map(Number);
-    const startDT=`${dateStr}T${pad(h)}${pad(m)}00`;
-    const endMins=h*60+m+evt.duration;const endH=Math.floor(endMins/60)%24;const endM=endMins%60;
-    const endDT=`${dateStr}T${pad(endH)}${pad(endM)}00`;
-    ics=ics.concat(['BEGIN:VEVENT',`UID:rhythm-${dateStr}-${i}@stacilamp.com`,`DTSTAMP:${stampStr}`,`DTSTART:${startDT}`,`DTEND:${endDT}`,'RRULE:FREQ=DAILY',`SUMMARY:🌿 ${evt.title}`,'DESCRIPTION:Your personalized daily rhythm from stacilamp.com','END:VEVENT']);
+
+function downloadICS() {
+  const today = new Date();
+  const pad = n => String(n).padStart(2,'0');
+  const dateStr = `${today.getFullYear()}${pad(today.getMonth()+1)}${pad(today.getDate())}`;
+  const stampStr = `${dateStr}T${pad(today.getHours())}${pad(today.getMinutes())}${pad(today.getSeconds())}Z`;
+  const name = userFirstName ? `${userFirstName}'s` : 'Your';
+  let ics = ['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Flourish & Flow//EN',`X-WR-CALNAME:${name} Daily Rhythm`,'CALSCALE:GREGORIAN','METHOD:PUBLISH'];
+  parsedEvents.forEach((evt, i) => {
+    const [h, m] = evt.time.split(':').map(Number);
+    const startDT = `${dateStr}T${pad(h)}${pad(m)}00`;
+    const endMins = h * 60 + m + evt.duration;
+    const endDT = `${dateStr}T${pad(Math.floor(endMins/60)%24)}${pad(endMins%60)}00`;
+    ics = ics.concat(['BEGIN:VEVENT',`UID:rhythm-${dateStr}-${i}@stacilamp.com`,`DTSTAMP:${stampStr}`,`DTSTART:${startDT}`,`DTEND:${endDT}`,'RRULE:FREQ=DAILY',`SUMMARY:🌿 ${evt.title}`,'DESCRIPTION:Your personalized daily rhythm from stacilamp.com','END:VEVENT']);
   });
   ics.push('END:VCALENDAR');
-  const blob=new Blob([ics.join('\r\n')],{type:'text/calendar;charset=utf-8'});
-  const url=URL.createObjectURL(blob);const a=document.createElement('a');
-  a.href=url;a.download='my-daily-rhythm.ics';document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);
+  const blob = new Blob([ics.join('\r\n')], { type: 'text/calendar;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'my-daily-rhythm.ics';
+  document.body.appendChild(a); a.click();
+  document.body.removeChild(a); URL.revokeObjectURL(url);
 }
-async function refineRhythm(){
-  const feedback=document.getElementById('refineFeedback').value.trim();
-  if(!feedback){showErr('refineErrorMsg',"Tell me what to adjust and I'll rewrite it for you.");return}
-  hideErr('refineErrorMsg');
-  const btn=document.getElementById('refineBtn');btn.disabled=true;btn.textContent='↻ Refining...';
-  document.getElementById('resultView').classList.remove('active');
-  document.getElementById('loadingView').classList.add('active');
-  window.scrollTo({top:0,behavior:'smooth'});
-  const v=lastVals;const name=userFirstName||'this person';
-  const prompt=`You are a Human Design rhythm coach. Revise this daily rhythm based on feedback. Keep what works, only change what they flagged. Same ## header format.
 
-DESIGN: ${v.hdType} | ${v.authority} | ${v.profile} | Wake: ${v.wake}
+async function refineRhythm() {
+  const feedback = document.getElementById('refineInput').value.trim();
+  if (!feedback) {
+    document.getElementById('refineError').textContent = 'Tell me what to adjust.';
+    document.getElementById('refineError').classList.add('active');
+    return;
+  }
+  document.getElementById('refineError').classList.remove('active');
+  document.getElementById('refineInput').value = '';
+
+  addMessage('user', feedback);
+  setInputDisabled(true);
+  showTyping();
+
+  try {
+    const prompt = `You previously created a daily rhythm. The person has feedback — revise only what they flagged, keep everything else.
+
+PREVIOUS RHYTHM:
+${lastRhythmText.substring(0, 600)}
+
 FEEDBACK: "${feedback}"
 
-PREVIOUS RHYTHM (summarized):
-${lastRhythmText.substring(0,500)}...
-
-Write the revised full rhythm. End with 1 sentence on what changed.
+Write the revised rhythm using same ## header format. End with 1 sentence on what changed.
 
 ---CALENDAR_EVENTS---
 TIME:HH:MM|TITLE:Event name|DURATION:30|RECUR:DAILY
 (5 key events)
 ---END_CALENDAR_EVENTS---`;
-  try{
-    const res=await fetch('/.netlify/functions/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:[{role:'user',content:prompt}]})});
-    const data=await res.json();
-    if(!res.ok||!data.content)throw new Error('Error refining');
-    const text=data.content.map(b=>b.text||'').join('');
-    const split=text.split('---CALENDAR_EVENTS---');
-    const rhythmText=split[0].trim();
-    const calRaw=split[1]?split[1].split('---END_CALENDAR_EVENTS---')[0].trim():'';
-    parsedEvents=parseCalendarEvents(calRaw,v.wakeRaw);
-    lastRhythmText=rhythmText;
-    document.getElementById('refineFeedback').value='';
-    btn.disabled=false;btn.textContent='↻ Refine My Rhythm';
-    showResult(rhythmText,userFirstName);
-  }catch(err){
-    document.getElementById('loadingView').classList.remove('active');
-    document.getElementById('resultView').classList.add('active');
-    btn.disabled=false;btn.textContent='↻ Refine My Rhythm';
-    showErr('refineErrorMsg','Something went wrong — please try again.');
+
+    const res = await fetch('/.netlify/functions/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ messages: [{ role: 'user', content: prompt }] })
+    });
+
+    const data = await res.json();
+    if (!res.ok || !data.content) throw new Error('API error');
+
+    const text = data.content.map(b => b.text || '').join('').trim();
+    const split = text.split('---CALENDAR_EVENTS---');
+    const rhythmText = split[0].trim();
+    const calRaw = split[1] ? split[1].split('---END_CALENDAR_EVENTS---')[0].trim() : '';
+
+    lastRhythmText = rhythmText;
+    parsedEvents = parseCalendarEvents(calRaw);
+
+    hideTyping();
+    addMessage('bot', "Here's your refined rhythm — I've adjusted what you flagged. 🌿");
+    setTimeout(() => addMessage('bot', rhythmText, 'result'), 300);
+
+  } catch(err) {
+    hideTyping();
+    addMessage('bot', "Something went wrong — please try again.");
+    console.error(err);
+  } finally {
+    setInputDisabled(false);
+  }
+}
+
+// Start the conversation
+async function startConversation() {
+  setInputDisabled(true);
+  showTyping();
+
+  try {
+    const res = await fetch('/.netlify/functions/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        system: SYSTEM_PROMPT,
+        messages: [{ role: 'user', content: 'start' }]
+      })
+    });
+
+    const data = await res.json();
+    if (!res.ok || !data.content) throw new Error('API error');
+
+    const reply = data.content.map(b => b.text || '').join('').trim();
+    conversationHistory.push({ role: 'assistant', content: reply });
+
+    hideTyping();
+    addMessage('bot', reply);
+    setInputDisabled(false);
+    document.getElementById('userInput').focus();
+
+  } catch(err) {
+    hideTyping();
+    addMessage('bot', "Hello! I'm so glad you're here. I'm going to help you build a daily rhythm that actually fits your life. Can I start by asking — what's your name?");
+    setInputDisabled(false);
     console.error(err);
   }
 }
-function resetForm(){
-  document.getElementById('resultView').classList.remove('active');
-  document.getElementById('resultContent').innerHTML='';
-  document.getElementById('calendarEventsPreview').innerHTML='';
-  document.getElementById('emailGate').classList.remove('active');
-  document.getElementById('formView').style.display='block';
-  parsedEvents=[];userFirstName='';lastRhythmText='';lastVals={};
-  window.scrollTo({top:0,behavior:'smooth'});
-}
-function copyResult(){
-  navigator.clipboard.writeText(document.getElementById('resultContent').innerText).then(()=>{
-    const btn=document.querySelector('.btn-filled');const orig=btn.textContent;
-    btn.textContent='✓ Copied!';setTimeout(()=>btn.textContent=orig,2000);
-  });
-}
-function showErr(id,msg){const el=document.getElementById(id);el.textContent=msg;el.classList.add('active')}
-function hideErr(id){document.getElementById(id).classList.remove('active')}
+
+// Boot
+window.addEventListener('load', startConversation);
 </script>
 </body>
 </html>
