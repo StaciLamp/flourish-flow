@@ -1,2 +1,7 @@
+[build]
+  base = "flourish-flow"
+  publish = "flourish-flow"
+  functions = "flourish-flow/netlify/functions"
+
 [functions]
   timeout = 30
