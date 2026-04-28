@@ -926,10 +926,20 @@ function parseCalendarEvents(raw) {
   const lines = raw.split('\n').filter(l => l.includes('TIME:') && l.includes('TITLE:'));
   const events = lines.map(line => {
     const get = (key) => { const m = line.match(new RegExp(key + ':([^|]+)')); return m ? m[1].trim() : ''; };
-    return { time: get('TIME'), title: get('TITLE'), duration: parseInt(get('DURATION')) || 30 };
+    return { time: get('TIME'), title: get('TITLE'), duration: parseInt(get('DURATION')) || 30, note: get('NOTE') };
   }).filter(e => e.time && e.title);
   return events.length >= 3 ? events : getDefaultEvents();
 }
+
+const EVENT_NOTES = [
+  "You were made to flourish — in your own rhythm, by your own design. 🌿",
+  "This is your time. Protect it. It's the foundation everything else builds on.",
+  "Your body knows what it needs. This is you listening to it. 🌿",
+  "Coming home to yourself, one breath at a time.",
+  "This moment is yours. No one else's. Breathe and begin. 🌿",
+  "You don't have to earn rest. You were designed for this.",
+  "Let this be simple. Show up. That's the whole practice. 🌿",
+];
 
 function getDefaultEvents() {
   return [
@@ -941,23 +951,85 @@ function getDefaultEvents() {
   ];
 }
 
-function addAllToGoogle() {
+function buildGoogleUrl(evt, i) {
   const today = new Date();
   const dateStr = today.toISOString().slice(0,10).replace(/-/g,'');
   const pad = n => String(n).padStart(2,'0');
-  parsedEvents.forEach((evt, i) => {
-    setTimeout(() => {
-      const [h, m] = evt.time.split(':').map(Number);
-      const startDT = `${dateStr}T${pad(h)}${pad(m)}00`;
-      const endMins = h * 60 + m + evt.duration;
-      const endH = Math.floor(endMins / 60) % 24;
-      const endM = endMins % 60;
-      const endDT = `${dateStr}T${pad(endH)}${pad(endM)}00`;
-      const title = encodeURIComponent(`🌿 ${evt.title}`);
-      const details = encodeURIComponent('Part of your personalized daily rhythm from stacilamp.com');
-      window.open(`https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${startDT}/${endDT}&details=${details}&recur=RRULE:FREQ%3DDAILY`, '_blank');
-    }, i * 600);
-  });
+  const [h, m] = evt.time.split(':').map(Number);
+  const startDT = `${dateStr}T${pad(h)}${pad(m)}00`;
+  const endMins = h * 60 + m + evt.duration;
+  const endDT = `${dateStr}T${pad(Math.floor(endMins/60)%24)}${pad(endMins%60)}00`;
+  const note = evt.note || EVENT_NOTES[i % EVENT_NOTES.length];
+  const details = encodeURIComponent(`${note}\n\nPart of your personalized daily rhythm from stacilamp.com — built around your Human Design. 🌿`);
+  const title = encodeURIComponent(`🌿 ${evt.title}`);
+  return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${startDT}/${endDT}&details=${details}&recur=RRULE:FREQ%3DDAILY`;
+}
+
+function addAllToGoogle() {
+  // Open events one by one with delay — but browser blocks multiple popups
+  // Instead show individual links in a modal
+  showGoogleLinksModal();
+}
+
+function showGoogleLinksModal() {
+  const existing = document.getElementById('googleModal');
+  if (existing) existing.remove();
+
+  const modal = document.createElement('div');
+  modal.id = 'googleModal';
+  modal.style.cssText = `
+    position: fixed; inset: 0; background: rgba(58,61,56,0.6); 
+    display: flex; align-items: center; justify-content: center; 
+    z-index: 1000; padding: 20px; backdrop-filter: blur(4px);
+  `;
+
+  const note0 = EVENT_NOTES[0];
+  const linksHtml = parsedEvents.map((evt, i) => {
+    const [h, m] = evt.time.split(':').map(Number);
+    const hr = h % 12 || 12;
+    const ampm = h >= 12 ? 'PM' : 'AM';
+    const timeStr = `${hr}:${String(m).padStart(2,'0')} ${ampm}`;
+    const url = buildGoogleUrl(evt, i);
+    return `
+      <a href="${url}" target="_blank" style="
+        display: flex; align-items: center; gap: 12px;
+        padding: 10px 14px; background: var(--cream);
+        border: 1px solid var(--border); border-radius: 8px;
+        text-decoration: none; color: var(--dark);
+        font-size: 13px; transition: background 0.2s;
+      " onmouseover="this.style.background='#ede9e3'" onmouseout="this.style.background='var(--cream)'">
+        <span style="font-size:9px; font-weight:500; letter-spacing:0.1em; color:var(--terra); min-width:52px;">${timeStr}</span>
+        <span style="flex:1; font-weight:400;">${evt.title}</span>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--sage)" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg>
+      </a>
+    `;
+  }).join('');
+
+  modal.innerHTML = `
+    <div style="
+      background: var(--white); border-radius: 16px; 
+      padding: 28px; max-width: 420px; width: 100%;
+      border-top: 3px solid var(--sage);
+      max-height: 85vh; overflow-y: auto;
+    ">
+      <div style="font-size:9px; font-weight:500; letter-spacing:0.2em; text-transform:uppercase; color:var(--sage); margin-bottom:10px;">✦ Add to Google Calendar</div>
+      <p style="font-family:'Abril Fatface',serif; font-size:20px; color:var(--dark); margin-bottom:6px; line-height:1.2;">Click each event to add</p>
+      <p style="font-size:12px; color:var(--slate); font-weight:300; margin-bottom:20px; line-height:1.7;">Each one opens in Google Calendar as a recurring daily reminder — with a little note just for you. 🌿</p>
+      <div style="display:flex; flex-direction:column; gap:6px; margin-bottom:20px;">
+        ${linksHtml}
+      </div>
+      <button onclick="document.getElementById('googleModal').remove()" style="
+        width:100%; padding:11px; background:transparent;
+        border:1px solid var(--border); border-radius:8px;
+        font-family:'Poppins',sans-serif; font-size:10px; font-weight:500;
+        letter-spacing:0.12em; text-transform:uppercase; color:var(--slate);
+        cursor:pointer;
+      ">Done</button>
+    </div>
+  `;
+
+  document.body.appendChild(modal);
+  modal.addEventListener('click', (e) => { if (e.target === modal) modal.remove(); });
 }
 
 function downloadICS() {
@@ -972,7 +1044,8 @@ function downloadICS() {
     const startDT = `${dateStr}T${pad(h)}${pad(m)}00`;
     const endMins = h * 60 + m + evt.duration;
     const endDT = `${dateStr}T${pad(Math.floor(endMins/60)%24)}${pad(endMins%60)}00`;
-    ics = ics.concat(['BEGIN:VEVENT',`UID:rhythm-${dateStr}-${i}@stacilamp.com`,`DTSTAMP:${stampStr}`,`DTSTART:${startDT}`,`DTEND:${endDT}`,'RRULE:FREQ=DAILY',`SUMMARY:🌿 ${evt.title}`,'DESCRIPTION:Your personalized daily rhythm from stacilamp.com','END:VEVENT']);
+    const note = evt.note || EVENT_NOTES[i % EVENT_NOTES.length];
+    ics = ics.concat(['BEGIN:VEVENT',`UID:rhythm-${dateStr}-${i}@stacilamp.com`,`DTSTAMP:${stampStr}`,`DTSTART:${startDT}`,`DTEND:${endDT}`,'RRULE:FREQ=DAILY',`SUMMARY:🌿 ${evt.title}`,`DESCRIPTION:${note}\\n\\nPart of your personalized daily rhythm from stacilamp.com 🌿`,'END:VEVENT']);
   });
   ics.push('END:VCALENDAR');
   const blob = new Blob([ics.join('\r\n')], { type: 'text/calendar;charset=utf-8' });
