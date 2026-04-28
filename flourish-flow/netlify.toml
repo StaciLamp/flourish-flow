@@ -1,6 +1,0 @@
-[build]
-  base = "flourish-flow"
-
-[functions]
-  directory = "netlify/functions"
-  timeout = 30
