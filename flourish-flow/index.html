@@ -700,27 +700,19 @@ async function refineRhythm(){
   document.getElementById('loadingView').classList.add('active');
   window.scrollTo({top:0,behavior:'smooth'});
   const v=lastVals;const name=userFirstName||'this person';
-  const prompt=`You are a warm wise Human Design expert. You generated a daily rhythm for ${name} and they have feedback. Revise thoughtfully — keep what works, change only what they flagged.
+  const prompt=`You are a Human Design rhythm coach. Revise this daily rhythm based on feedback. Keep what works, only change what they flagged. Same ## header format.
 
-THEIR DESIGN: Type: ${v.hdType} | Authority: ${v.authority} | Profile: ${v.profile}
-Not-Self: ${v.notSelf} | Signature: ${v.signature}
-Defined: ${v.centers.join(', ')||'unknown'} | Gates: ${v.gates||'not provided'}
+DESIGN: ${v.hdType} | ${v.authority} | ${v.profile} | Wake: ${v.wake}
+FEEDBACK: "${feedback}"
 
-THEIR LIFE: Wake ${v.wake} | Bed ${v.bed} | Work: ${v.work} | Living: ${v.living}
-Chronotype: ${v.chronotype} | Sleep: ${v.sleepHours}
-Drains: ${v.drains.join(', ')||'not specified'} | Practices: ${v.practices||'not specified'}
-Goals: ${v.goals||'not specified'}
+PREVIOUS RHYTHM (summarized):
+${lastRhythmText.substring(0,500)}...
 
-PREVIOUS RHYTHM:
-${lastRhythmText}
-
-THEIR FEEDBACK: "${feedback}"
-
-Revise using same section structure (## headers). Same warmth. Only change what they flagged. End with 1-2 sentences acknowledging what changed and why it better honors their design.
+Write the revised full rhythm. End with 1 sentence on what changed.
 
 ---CALENDAR_EVENTS---
 TIME:HH:MM|TITLE:Event name|DURATION:30|RECUR:DAILY
-(5-8 updated events)
+(5 key events)
 ---END_CALENDAR_EVENTS---`;
   try{
     const res=await fetch('/.netlify/functions/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:[{role:'user',content:prompt}]})});
